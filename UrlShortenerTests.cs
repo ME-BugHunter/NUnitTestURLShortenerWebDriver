@@ -16,10 +16,30 @@ namespace NUnitTestURLShortenerWebDriver
             driver.Navigate().GoToUrl(baseUrl);
         }
 
-        [Test]
-        public void Test1()
+        [TearDown]
+        public void closeBrowser()
         {
-            Assert.Pass();
+            driver.Quit();
+        }
+
+        [Test]
+        public void Test_CheckTitle()
+        {
+            var pageTitle = driver.Title;
+            Assert.That("URL Shortener", Is.EqualTo(pageTitle));
+        }
+
+        [Test]
+        public void Test_CheckShortUrlsPage()
+        {
+            var shortUrl = driver.FindElement(By.LinkText("Short URLs"));
+            shortUrl.Click();
+            var shortUrlsTitle = driver.FindElement(By.CssSelector("main > h1")).Text;
+            Assert.That("Short URLs", Is.EqualTo(shortUrlsTitle));
+
+            var tableCells = driver.FindElements(By.CssSelector("tr > td"));
+            Assert.That(tableCells[0].Text, Is.EqualTo("https://nakov.com"));
+            Assert.That(tableCells[1].Text, Is.EqualTo("http://shorturl.softuniqa.repl.co/go/nak"));
         }
     }
 }
